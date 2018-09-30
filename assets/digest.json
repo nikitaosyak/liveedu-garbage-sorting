@@ -1,6 +1,10 @@
 {
   "graphics": [
     {
+      "alias": "background",
+      "path": "assets/graphics/background.png"
+    },
+    {
       "alias": "banana_peel",
       "path": "assets/graphics/banana_peel.png"
     },
@@ -17,5 +21,18 @@
       "path": "assets/graphics/paper.png"
     }
   ],
-  "sfx": []
+  "sfx": [
+    {
+      "alias": "sfx_correct_bin",
+      "path": "assets/sfx/correct_bin.mp3"
+    },
+    {
+      "alias": "sfx_missed",
+      "path": "assets/sfx/missed.mp3"
+    },
+    {
+      "alias": "sfx_wrong_bin",
+      "path": "assets/sfx/wrong_bin.mp3"
+    }
+  ]
 }

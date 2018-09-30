@@ -29,8 +29,8 @@ export const GARBAGE_TO_BIN = {
 export const Simulation = renderer => {
 
     let params = {
-        spawnSpeed: 0.2,
-        garbageSpeed: 200,
+        spawnSpeed: 4,
+        garbageSpeed: 120,
         speedVariance: 50
     }
 
@@ -41,7 +41,8 @@ export const Simulation = renderer => {
         dontUpdate: false,
         canMiss: 3,
         canConfuse: 3,
-        score: 0
+        score: 0,
+        difficulty: 0
     }
 
     const scorePanel = ScorePanel().setPosition(0, 0)
@@ -54,6 +55,15 @@ export const Simulation = renderer => {
 
         if (state.canConfuse <= 0) {
             state.lost = true
+        }
+
+        const scoreLevel = Math.floor(state.score/10)
+        if (scoreLevel > state.difficulty) {
+            state.difficulty += 1
+            params.spawnSpeed *= 0.8
+            params.garbageSpeed *= 1.2
+            params.speedVariance *= 1.1
+            console.log('new difficulty level: ', state.difficulty)
         }
 
         scorePanel.update(state)
@@ -125,7 +135,7 @@ export const Simulation = renderer => {
 
                 // console.log(`spawning ${spawnQueue[spawnQueueIdx]} from index ${spawnQueueIdx}`)
                 const gbg = IVisual(spawnQueue[spawnQueueIdx])
-                    .setLayer(RENDER_LAYER.GAME)
+                    .setLayer(RENDER_LAYER.GARBAGE)
                     .setAnchor(0.5, 0.5)
                     .setPosition(MathUtil.randomRange(100, renderer.size.x-100), -100)
                     .setSize(100, 100)
@@ -144,6 +154,7 @@ export const Simulation = renderer => {
                 //
                 // flying down
                 g.visual.y += g.speed * dt
+                g.visual.rotation += Math.PI * dt
 
                 //
                 // handling missed garbage

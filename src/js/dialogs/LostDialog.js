@@ -28,11 +28,16 @@ export const LostDialog = (renderer, score) => {
         .setAnchor(0.5, 0.5).setPosition(304, 240)
 
     const restart = IButton(IVisual('button_restart_flat'),
-        () => window.location.href = window.location.origin
-    )
+            () => window.location.href = window.location.origin
+        )
         .setAnchor(0, 0).setPosition(100, 330)
 
-    self.add(label).add(scoreLabel).add(restart)
+    const share = IButton(IVisual('button_share'),
+            () => window.open(`https://twitter.com/intent/tweet?text=I've scored ${score} while sorting garbage! Can you top my result? Challenge me at https://liveedu-garbage-sorting.firebaseapp.com/`, '_blank')
+        )
+        .setAnchor(1, 0).setPosition(width-100, 330)
+
+    self.add(label).add(scoreLabel).add(restart).add(share)
 
     return self
 }

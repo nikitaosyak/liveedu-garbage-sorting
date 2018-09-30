@@ -1,7 +1,8 @@
 
 export const RENDER_LAYER = {
     BACKGROUND: 'BACKGROUND',
-    GAME: 'GAME',
+    GARBAGE: 'GARBAGE',
+    BINS: 'BINS',
     UI: 'UI'
 }
 

@@ -20,7 +20,7 @@ export const Bin = (type, x, y) => {
         .setAnchor(0.5, 0)
         .setTint(typeTint[type])
         .setPosition(x, y)
-        .setLayer(RENDER_LAYER.GAME)
+        .setLayer(RENDER_LAYER.BINS)
         .setName(typeLabel[type])
     self.visual.interactive = true
 

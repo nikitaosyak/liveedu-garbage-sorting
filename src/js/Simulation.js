@@ -4,6 +4,7 @@ import {MathUtil} from "./util/MathUtil";
 import {IVisual} from "./Base";
 import {Bin} from "./Bin";
 import {Draggable} from "./Draggable";
+import {ScorePanel} from "./ScorePanel";
 
 export const GARBAGE_TYPES = {
     BANANA_PEEL: 'banana_peel',
@@ -26,22 +27,36 @@ export const GARBAGE_TO_BIN = {
 export const Simulation = renderer => {
 
     let params = {
-        spawnSpeed: 2,
+        spawnSpeed: 3,
         garbageSpeed: 200,
         speedVariance: 50
     }
 
-    let gameState = {
+    let state = {
+        timeScale: 1,
+        lost: false,
+        dontUpdate: false,
         canMiss: 3,
         canConfuse: 3,
         score: 0
     }
 
-    //
-    // renderer.addObject(
-    //     IText('Ubuntu! 0123456789', {fontFamily: 'Ubuntu Mono', fontSize: 90, fill: '#CFCFFF'})
-    //         .setLayer(RENDER_LAYER.UI).setPosition(300, 10)
-    // )
+    const scorePanel = ScorePanel().setPosition(0, 0)
+    renderer.addObject(scorePanel)
+
+    const invalidateState = () => {
+        if (state.canMiss <= 0) {
+            state.lost = true
+        }
+
+        if (state.canConfuse <= 0) {
+            state.lost = true
+        }
+
+        scorePanel.update(state)
+    }
+    console.log(scorePanel)
+    scorePanel.update(state)
 
     // initialize spawn queue
     let timeSinceLastSpawn = Number.MAX_VALUE
@@ -66,8 +81,29 @@ export const Simulation = renderer => {
         new Draggable(b.visual, renderer)
     })
 
+    const grayFilter = new PIXI.filters.ColorMatrixFilter()
+    renderer.stage.filters = [grayFilter]
+    grayFilter.desaturate()
+    grayFilter.alpha = 0
+
     const self = {
         update: dt => {
+            if (state.dontUpdate) return
+
+            if (state.lost) {
+                state.timeScale = MathUtil.lerp(state.timeScale, 0.00, 0.05)
+                grayFilter.alpha = 1 - state.timeScale
+
+                if (state.timeScale < 0.01) {
+                    console.log('am i here?')
+                    state.dontUpdate = true
+
+                    window.alert('you lost')
+                    window.location.href = window.location.origin
+                }
+            }
+            dt *= state.timeScale
+
             //
             // spawning garbage
             if (timeSinceLastSpawn > params.spawnSpeed) {
@@ -75,7 +111,7 @@ export const Simulation = renderer => {
                 spawnQueueIdx += 1
                 if (spawnQueueIdx > spawnQueue.length-1) spawnQueueIdx = 0
 
-                console.log(`spawning ${spawnQueue[spawnQueueIdx]} from index ${spawnQueueIdx}`)
+                // console.log(`spawning ${spawnQueue[spawnQueueIdx]} from index ${spawnQueueIdx}`)
                 const gbg = IVisual(spawnQueue[spawnQueueIdx])
                     .setLayer(RENDER_LAYER.GAME)
                     .setAnchor(0.5, 0.5)
@@ -101,6 +137,8 @@ export const Simulation = renderer => {
                 // handling missed garbage
                 if (g.visual.y > renderer.size.y + 100) {
                     window.resources.playSfx('sfx_missed', 0.1)
+                    state.canMiss -= 1
+                    invalidateState()
                     toRemoveArray.push(g)
                 }
 
@@ -118,14 +156,15 @@ export const Simulation = renderer => {
                         g.visual.x,
                         g.visual.y
                     )) {
-                        // console.log(`${g.name} catched by ${b.name}`)
-                        // console.log(GARBAGE_TO_BIN[g.name], b.name)
                         if (GARBAGE_TO_BIN[g.name].indexOf(b.name) > -1) {
                             window.resources.playSfx('sfx_correct_bin', 0.1)
+                            state.score += 1
                         } else {
                             window.resources.playSfx('sfx_wrong_bin', 0.1)
+                            state.canConfuse -= 1
                         }
                         toRemoveArray.push(g)
+                        invalidateState()
                     }
                 })
             })

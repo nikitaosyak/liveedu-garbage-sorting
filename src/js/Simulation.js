@@ -5,6 +5,8 @@ import {IVisual} from "./Base";
 import {Bin} from "./Bin";
 import {Draggable} from "./Draggable";
 import {ScorePanel} from "./ScorePanel";
+import {StartPanel} from "./dialogs/StartPanel";
+import {LostDialog} from "./dialogs/LostDialog";
 
 export const GARBAGE_TYPES = {
     BANANA_PEEL: 'banana_peel',
@@ -27,12 +29,13 @@ export const GARBAGE_TO_BIN = {
 export const Simulation = renderer => {
 
     let params = {
-        spawnSpeed: 3,
+        spawnSpeed: 0.2,
         garbageSpeed: 200,
         speedVariance: 50
     }
 
     let state = {
+        started: false,
         timeScale: 1,
         lost: false,
         dontUpdate: false,
@@ -55,7 +58,6 @@ export const Simulation = renderer => {
 
         scorePanel.update(state)
     }
-    console.log(scorePanel)
     scorePanel.update(state)
 
     // initialize spawn queue
@@ -86,6 +88,13 @@ export const Simulation = renderer => {
     grayFilter.desaturate()
     grayFilter.alpha = 0
 
+    const startPanel = new StartPanel(renderer)
+    startPanel.show()
+    startPanel.on('ok', () => {
+        startPanel.hide()
+        state.started = true
+    })
+
     const self = {
         update: dt => {
             if (state.dontUpdate) return
@@ -98,9 +107,12 @@ export const Simulation = renderer => {
                     console.log('am i here?')
                     state.dontUpdate = true
 
-                    window.alert('you lost')
-                    window.location.href = window.location.origin
+                    // window.alert('you lost')
+                    // window.location.href = window.location.origin
+                    new LostDialog(renderer, state.score).show()
                 }
+            } else {
+                state.timeScale = state.started ? 1 : 0.1
             }
             dt *= state.timeScale
 

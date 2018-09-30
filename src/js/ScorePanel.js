@@ -1,4 +1,4 @@
-import {IContainer, IText} from "./Base";
+import {IContainer, IPanelBackground, IText} from "./Base";
 import {RENDER_LAYER} from "./Renderer";
 
 export const ScorePanel = () => {
@@ -15,6 +15,8 @@ export const ScorePanel = () => {
     //     IText('Ubuntu! 0123456789', {fontFamily: 'Ubuntu Mono', fontSize: 90, fill: '#CFCFFF'})
     //         .setLayer(RENDER_LAYER.UI).setPosition(300, 10)
     // )
+
+    // self.add(IPanelBackground(400, 200))
 
     const scoreLabel = IText('Score:', {fontFamily: 'Ubuntu Mono', fontSize: 60, fill: '#CFCFFF'})
         .setAnchor(0, 0.5).setPosition(0, 50)

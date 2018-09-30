@@ -1,4 +1,26 @@
 
+export const IPanelBackground = (width, height) => {
+    let layer = null
+
+    const s = new PIXI.Graphics(false)
+    s.lineStyle(10, 0xb5b5b5, 0.95)
+    s.beginFill(0x85746e, 0.98)
+    s.drawRect(0, 0, width, height, 30)
+    s.endFill()
+
+    const self = {
+        setLayer: v => { layer = v; return self },
+        setPosition: (x, y) => { s.x = x; s.y = y; return self },
+        add: (obj) => {
+            s.addChild(obj.visual)
+            return self
+        },
+        get layer() { return layer },
+        get visual() { return s }
+    }
+    return self
+}
+
 export const IContainer = () => {
     let layer = null
     const c = new PIXI.Container()
@@ -38,6 +60,19 @@ export const IVisual = texture => {
     return self
 }
 
+export const IButton = (visual, onClick) => {
+    visual.visual.interactive = true
+    visual.visual.on('click', onClick)
+    visual.visual.on('tap', onClick)
+
+    Object.assign(visual, {
+        get interactive() { return visual.visual.interactive },
+        set interactive(v) { visual.visual.interactive = v },
+    })
+
+    return visual
+}
+
 export const IText = (text, style) => {
     let layer = null
 
@@ -54,4 +89,26 @@ export const IText = (text, style) => {
         get visual() { return t }
     }
     return self
+}
+
+export const IEmitter = (dict) => {
+    return {
+        on: (e, callback) => {
+            if (e in dict) {
+                dict[e].push(callback)
+            } else {
+                dict[e] = [callback]
+            }
+        },
+        clear: (e) => {
+            if (e in dict) {
+                delete dict[e]
+            }
+        },
+        emit: (e, ...args) => {
+            if (e in dict) {
+                dict[e].forEach(cb => cb.apply(null, args))
+            }
+        }
+    }
 }

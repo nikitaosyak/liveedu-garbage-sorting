@@ -17,6 +17,18 @@
       "path": "assets/graphics/bottle.png"
     },
     {
+      "alias": "button_ok_flat",
+      "path": "assets/graphics/button_ok_flat.png"
+    },
+    {
+      "alias": "button_restart_flat",
+      "path": "assets/graphics/button_restart_flat.png"
+    },
+    {
+      "alias": "button_share",
+      "path": "assets/graphics/button_share.png"
+    },
+    {
       "alias": "paper",
       "path": "assets/graphics/paper.png"
     }

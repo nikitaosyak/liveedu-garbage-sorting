@@ -28,9 +28,9 @@ export const Renderer = () => {
         height: vSize.y,
         view: canvas,
         backgroundColor: 0x0,
-        antialias: false,
+        antialias: true,
         resolution: window.devicePixelRatio,
-        forceFXAA: false,
+        forceFXAA: true,
         autoResize: true
     })
 
@@ -62,6 +62,7 @@ export const Renderer = () => {
     }
 
     const self =  {
+        get pixi() { return renderer },
         get canvasW() { return canvasW },
         get canvasH() { return canvasH },
         get size() { return vSize },

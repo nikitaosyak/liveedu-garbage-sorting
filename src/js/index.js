@@ -1,6 +1,7 @@
 import {Resources} from "./Resources";
 import {RENDER_LAYER, Renderer} from "./Renderer";
-import {IText, IVisual} from "./Base";
+import {IVisual} from "./Base";
+import {Simulation} from "./Simulation";
 
 
 window.onload = () => {
@@ -11,7 +12,6 @@ window.onload = () => {
     const startGame = () => {
 
         const renderer = Renderer()
-
         renderer.addObject(
             IVisual('background')
                 .setLayer(RENDER_LAYER.BACKGROUND)
@@ -19,20 +19,7 @@ window.onload = () => {
                 .setPosition(renderer.size.x/2, renderer.size.y/2)
         )
 
-        renderer.addObject(
-            IVisual('banana_peel').setLayer(RENDER_LAYER.GAME)
-        )
-
-        renderer.addObject(
-            IText('Hello', {fontFamily: 'Crimson Text', fontSize: 90, fill: '#CFCFFF'}).setLayer(RENDER_LAYER.UI)
-        )
-
-        renderer.addObject(
-            IText('Ubuntu! 0123456789', {fontFamily: 'Ubuntu Mono', fontSize: 90, fill: '#CFCFFF'})
-                .setLayer(RENDER_LAYER.UI).setPosition(300, 10)
-        )
-
-        // resources.playSfx('sfx_wrong_bin')
+        const simulation = Simulation(renderer)
 
         let time = Date.now()
         const gameLoop = () => {
@@ -40,6 +27,7 @@ window.onload = () => {
             let dt = (now - time) / 1000
             time = now
 
+            simulation.update(dt)
             renderer.update()
 
             requestAnimationFrame(gameLoop)

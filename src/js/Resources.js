@@ -29,8 +29,9 @@ export const Resources = () => {
                 const sound = res[alias].sound
                 sound.volume = volume
                 sound.play()
+            } else {
+                console.warn(`there is not sfx by name ${alias}`)
             }
-            console.warn(`there is not sfx by name ${alias}`)
         }
     }
 

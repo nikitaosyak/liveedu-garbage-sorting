@@ -1,0 +1,21 @@
+{
+  "graphics": [
+    {
+      "alias": "banana_peel",
+      "path": "assets/graphics/banana_peel.png"
+    },
+    {
+      "alias": "bin",
+      "path": "assets/graphics/bin.png"
+    },
+    {
+      "alias": "bottle",
+      "path": "assets/graphics/bottle.png"
+    },
+    {
+      "alias": "paper",
+      "path": "assets/graphics/paper.png"
+    }
+  ],
+  "sfx": []
+}
